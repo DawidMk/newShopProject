@@ -13,11 +13,18 @@ public class User {
     @Column(name = "id")
     @GeneratedValue(generator = "incrementor")
     @GenericGenerator(name = "incrementator", strategy = "increment")
-    Long id;
+    private Long id;
     @Column(name = "name")
-    String name;
+    private String name;
     @Column(name = "password")
-    String password;
+    private String password;
+
+    public User(String name, String password) {
+        this.name = name;
+        this.password = password;
+    }
+//    @Column(name = "address")
+//    private UserAddress address;
 //    String address;
 //    List<Cart> cartList = new ArrayList<>();
 

@@ -1,6 +1,7 @@
 package pl.dma;
 
-import pl.dma.user.User;
+import pl.dma.cart.Cart;
+import pl.dma.user.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -13,12 +14,16 @@ public class Main {
     public static User loggedUser;
     public static Map<User, List<Cart>> loggedUserCartList = new HashMap<>();
     public static UserDAO userDAO = new UserDAO();
-    public static ProductDAO productDAO = new ProductDAO();
-    public static CartService cartService = new CartService();
+    public static UserLoginService userLoginService = new UserLoginService(userDAO);
+    public static UserRegisterService userRegisterService = new UserRegisterService(userDAO);
+    public static UserLoginDTO userLoginDTO = new UserLoginDTO();
+    public static UserRegisterDTO userRegisterDTO = new UserRegisterDTO();
+//    public static ProductDAO productDAO = new ProductDAO();
+//    public static CartService cartService = new CartService();
     private final static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        productDAO.populateProducts();
+//        productDAO.populateProducts();
         start();
     }
 
@@ -39,10 +44,10 @@ public class Main {
 
         switch (choice) {
             case 1:
-                UserLoginService.login(userDAO);
+                loginUser();
                 break;
             case 2:
-                UserRegisterService.register(userDAO);
+                registerUser();
                 break;
             case 3:
                 entityManagerFactory.close();
@@ -63,12 +68,13 @@ public class Main {
 
         switch (choice) {
             case 1:
+                loggedUser = null;
                 initialMenu();
-            case 2:
+        /*    case 2:
                 productDAO.showListOfProducts();
             case 3:
                 addToCart();
-           /*     case 4:
+                case 4:
                     showCartProducts();
                 case 5:
                     removeFromCart();*/
@@ -79,15 +85,46 @@ public class Main {
 
     }
 
+    private static void registerUser(){
+
+        System.out.println("podaj login");
+        String login = scanner.next();
+        userRegisterDTO.setName(login);
+        System.out.println("podaj hasło");
+        String passw = scanner.next();
+        userRegisterDTO.setPassword(passw);
+        boolean ifSuccess = userRegisterService.register(userRegisterDTO);
+        if(ifSuccess){
+            System.out.println("zarejestrowano");
+        }else {
+            System.out.println("rejestracja nie powiodła się / użytkownik istnieje");
+        }
+    }
+
+    private static void loginUser(){
+
+        System.out.println("podaj login");
+        String login = scanner.next();
+        userLoginDTO.setName(login);
+        System.out.println("podaj hasło");
+        String passw = scanner.next();
+        userLoginDTO.setPassword(passw);
+        boolean ifSuccess = userLoginService.login(userLoginDTO);
+        if(ifSuccess){
+            System.out.println("zalogowano");
+        }else{
+            System.out.println("nie udało się zalogować");
+        }
+
+    }
+/*
     private static void addToCart() {
         System.out.println("podaj id produktu");
         Long productId = scanner.nextLong();
         Optional<Product> product = productDAO.getById(productId);
         product.ifPresent(cartService::addProduct);
-    }
-
-
+    }*/
 
 
 }
-}
+
