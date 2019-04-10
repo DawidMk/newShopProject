@@ -1,6 +1,9 @@
 package pl.dma;
 
 import pl.dma.cart.Cart;
+import pl.dma.cart.CartService;
+import pl.dma.product.Product;
+import pl.dma.product.ProductDAO;
 import pl.dma.user.*;
 
 import javax.persistence.EntityManager;
@@ -18,8 +21,10 @@ public class Main {
     public static UserRegisterService userRegisterService = new UserRegisterService(userDAO);
     public static UserLoginDTO userLoginDTO = new UserLoginDTO();
     public static UserRegisterDTO userRegisterDTO = new UserRegisterDTO();
-//    public static ProductDAO productDAO = new ProductDAO();
-//    public static CartService cartService = new CartService();
+    public static ProductDAO productDAO = new ProductDAO();
+    public static Cart cart = new Cart(loggedUser);
+    public static CartService cartService = new CartService(cart, productDAO);
+    //    public static CartService cartService = new CartService();
     private final static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -28,8 +33,6 @@ public class Main {
     }
 
     private static void start() {
-        userDAO.populateUserList();
-
         if (loggedUser == null) {
             initialMenu();
         } else {
@@ -38,7 +41,6 @@ public class Main {
     }
 
     private static void initialMenu() {
-        userDAO.populateUserList();
         System.out.println("wybierz opcję: ");
         System.out.println("1. zaloguj");
         System.out.println("2. zarejestruj");
@@ -73,14 +75,14 @@ public class Main {
             case 1:
                 loggedUser = null;
                 initialMenu();
-        /*    case 2:
+            case 2:
                 productDAO.showListOfProducts();
             case 3:
-                addToCart();
-                case 4:
-                    showCartProducts();
-                case 5:
-                    removeFromCart();*/
+                addProductToCart();
+            case 4:
+                cartService.showCart();
+//            case 5:
+//                removeFromCart();*/
             default:
                 System.out.println("zły wybór");
         }
@@ -88,7 +90,7 @@ public class Main {
 
     }
 
-    private static void registerUser(){
+    private static void registerUser() {
 
         System.out.println("podaj login");
         String login = scanner.next();
@@ -97,14 +99,14 @@ public class Main {
         String passw = scanner.next();
         userRegisterDTO.setPassword(passw);
         boolean ifSuccess = userRegisterService.register(userRegisterDTO);
-        if(ifSuccess){
+        if (ifSuccess) {
             System.out.println("zarejestrowano");
-        }else {
+        } else {
             System.out.println("rejestracja nie powiodła się / użytkownik istnieje");
         }
     }
 
-    private static void loginUser(){
+    private static void loginUser() {
 
         System.out.println("podaj login");
         String login = scanner.next();
@@ -113,20 +115,20 @@ public class Main {
         String passw = scanner.next();
         userLoginDTO.setPassword(passw);
         boolean ifSuccess = userLoginService.login(userLoginDTO);
-        if(ifSuccess){
+        if (ifSuccess) {
             System.out.println("zalogowano");
-        }else{
+        } else {
             System.out.println("nie udało się zalogować");
         }
 
     }
-/*
-    private static void addToCart() {
+
+    private static void addProductToCart() {
         System.out.println("podaj id produktu");
         Long productId = scanner.nextLong();
-        Optional<Product> product = productDAO.getById(productId);
-        product.ifPresent(cartService::addProduct);
-    }*/
+        Product chosenProduct = cartService.productById(productId);
+        cartService.addToCart(chosenProduct, 1);
+    }
 
 
 }

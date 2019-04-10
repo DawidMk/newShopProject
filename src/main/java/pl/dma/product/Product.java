@@ -1,6 +1,6 @@
 package pl.dma.product;
 
-import lombok.Data;
+import lombok.Getter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 
-@Data
+@Getter
 @Entity
 @Table(name = "product_table")
 public class Product {
@@ -19,6 +19,8 @@ public class Product {
     private BigDecimal price;
     @Column(name = "name")
     private String name;
+    @Column(name = "stock")
+    private Integer stock;
 
     public String view() {
         return id + " " + name + ":" + price;
