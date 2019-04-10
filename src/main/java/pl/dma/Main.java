@@ -28,6 +28,8 @@ public class Main {
     }
 
     private static void start() {
+        userDAO.populateUserList();
+
         if (loggedUser == null) {
             initialMenu();
         } else {
@@ -36,6 +38,7 @@ public class Main {
     }
 
     private static void initialMenu() {
+        userDAO.populateUserList();
         System.out.println("wybierz opcję: ");
         System.out.println("1. zaloguj");
         System.out.println("2. zarejestruj");

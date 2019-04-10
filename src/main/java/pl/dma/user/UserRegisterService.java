@@ -10,9 +10,11 @@ public class UserRegisterService {
     }
 
     private boolean userExists(UserRegisterDTO dto){
-        return userDAO.getUsersList().stream()
-                .map(User::getName)
-                .anyMatch(u -> u.equals(dto.getName()));
+//        return userDAO.getUsersList().stream()
+//                .map(User::getName)
+//                .anyMatch(u -> u.equals(dto.getName()));
+        return userDAO.checkIfUSerExists(dto.getName());
+
     }
 
     public boolean register(UserRegisterDTO dto) {

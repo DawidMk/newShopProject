@@ -5,22 +5,19 @@ public class UserLoginService {
 
     public UserLoginService(UserDAO userDAO) {
         this.userDAO = userDAO;
-
     }
 
     private boolean userExists(UserLoginDTO dto){
-        return userDAO.getUsersList().stream()
-                .map(User::getName)
-                .anyMatch(u -> u.equals(dto.getName()));
+//        return userDAO.getUsersList().stream()
+//                .map(User::getName)
+//                .anyMatch(u -> u.equals(dto.getName()));
+        return userDAO.checkIfUSerExists(dto.getName());
     }
 
     public boolean login(UserLoginDTO dto) {
         if (userExists(dto)) {
             User user = new User(dto.getName(), dto.getPassword());
-
             return userDAO.getFromDB(user);
-
-//            throw new UserExistsException("user: " + dto.getName() + " już istnieje");
         }
         return false;
     }
